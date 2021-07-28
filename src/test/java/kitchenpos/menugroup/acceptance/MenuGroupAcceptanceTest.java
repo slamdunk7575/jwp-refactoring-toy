@@ -47,16 +47,20 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 메뉴_그룹_생성됨(ExtractableResponse<Response> createResponse) {
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
     public static ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/menu-groups")
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroup menuGroup) {
+        return 메뉴_그룹_등록_요청(menuGroup);
+    }
+
+    public static void 메뉴_그룹_생성됨(ExtractableResponse<Response> createResponse) {
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static void 메뉴_그룹_응답됨(ExtractableResponse<Response> findResponse) {
