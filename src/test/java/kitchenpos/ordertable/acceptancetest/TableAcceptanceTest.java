@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.acceptancetest;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -107,6 +108,10 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
         List<Long> actualIds = findResponse.jsonPath().getList("id", Long.class);
         assertThat(actualIds).containsAll(expectedProductIds);
+    }
+
+    public static ExtractableResponse<Response> 주문_테이블_등록_되어있음(OrderTable orderTable) {
+        return 주문_테이블_생성_요청(orderTable);
     }
 
 }
