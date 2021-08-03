@@ -113,4 +113,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(findMenuIds).containsAll(createMenuIds);
     }
 
+    public static ExtractableResponse<Response> 메뉴_등록_되어있음(String menuName, BigDecimal menuPrice, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return 메뉴_등록_요청(new Menu(menuName, menuPrice, menuGroup.getId(), menuProducts));
+    }
 }
