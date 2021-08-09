@@ -9,6 +9,8 @@ import kitchenpos.menu.acceptance.MenuAcceptanceTest;
 import kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest;
 import kitchenpos.ordertable.acceptancetest.TableAcceptanceTest;
 import kitchenpos.product.acceptance.ProductAcceptanceTest;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,8 +37,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
         MenuGroup 추천메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음(new MenuGroup("추천메뉴")).as(MenuGroup.class);
 
-        Product 양념치킨 = ProductAcceptanceTest.상품_등록되어_있음(new Product("양념치킨", BigDecimal.valueOf(16000))).as(Product.class);
-        Product 후라이드치킨 = ProductAcceptanceTest.상품_등록되어_있음(new Product("후라이드치킨", BigDecimal.valueOf(15000))).as(Product.class);
+        ProductResponse 양념치킨 = ProductAcceptanceTest.상품_등록되어_있음(new ProductRequest("양념치킨", BigDecimal.valueOf(16000))).as(ProductResponse.class);
+        ProductResponse 후라이드치킨 = ProductAcceptanceTest.상품_등록되어_있음(new ProductRequest("후라이드치킨", BigDecimal.valueOf(15000))).as(ProductResponse.class);
 
         MenuProduct 양념치킨_menuProduct = new MenuProduct(양념치킨.getId(), 1);
         MenuProduct 후라이드치킨_menuProduct = new MenuProduct(후라이드치킨.getId(), 1);
