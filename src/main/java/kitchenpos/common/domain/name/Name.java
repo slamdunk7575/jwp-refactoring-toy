@@ -17,7 +17,7 @@ public class Name {
     }
 
     private void validateName(String name) {
-        if (Objects.isNull(name)) {
+        if (Objects.isNull(name) || name.isEmpty()) {
             throw new InvalidNameException();
         }
     }
