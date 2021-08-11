@@ -1,66 +1,52 @@
 package kitchenpos.menugroup.application;
 
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.BaseServiceTest;
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
+public class MenuGroupServiceTest extends BaseServiceTest {
 
-@ExtendWith(MockitoExtension.class)
-public class MenuGroupServiceTest {
-
-    @Mock
-    private MenuGroupDao menuGroupDao;
-
-    @InjectMocks
+    @Autowired
     private MenuGroupService menuGroupService;
 
-    private MenuGroup menuGroup;
-
-    @BeforeEach
-    void setUp() {
-        menuGroup = new MenuGroup("추천메뉴");
-    }
-
-
-    @DisplayName("메뉴 그룹을 생성할 수 있다.")
+    @DisplayName("메뉴 그룹을 등록할 수 있다.")
     @Test
-    void create() {
+    void createMenuGroup() {
         // given
-        when(menuGroupDao.save(menuGroup)).thenReturn(menuGroup);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("추천메뉴");
 
         // when
-        MenuGroup createMenuGroup = menuGroupService.create(this.menuGroup);
+        MenuGroupResponse menuGroupResponse = menuGroupService.create(menuGroupRequest);
 
         // then
-        assertThat(createMenuGroup.getId()).isEqualTo(menuGroup.getId());
-        assertThat(createMenuGroup.getName()).isEqualTo(menuGroup.getName());
+        assertThat(menuGroupResponse.getId()).isNotNull();
+        assertThat(menuGroupResponse.getName()).isEqualTo("추천메뉴");
     }
 
     @DisplayName("메뉴 그룹의 목록을 조회할 수 있다.")
     @Test
-    void findAll() {
-        // given
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(menuGroup));
-
+    void findAllMenuGroups() {
         // when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroupResponses = menuGroupService.findAll();
 
         // then
-        assertThat(menuGroups.get(0).getId()).isEqualTo(menuGroup.getId());
-        assertThat(menuGroups.get(0).getName()).isEqualTo(menuGroup.getName());
-    }
+        assertThat(menuGroupResponses).isNotEmpty();
+        assertThat(menuGroupResponses.stream()
+                .map(response -> response.getName())
+                .collect(Collectors.toList()))
+                .containsAll(Arrays.asList("두마리메뉴", "한마리메뉴",
+                        "순살파닭두마리메뉴", "신메뉴"));
 
+
+    }
 }
