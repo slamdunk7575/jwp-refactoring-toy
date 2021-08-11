@@ -6,6 +6,8 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.*;
 import kitchenpos.menu.acceptance.MenuAcceptanceTest;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest;
 import kitchenpos.ordertable.acceptancetest.TableAcceptanceTest;
 import kitchenpos.product.acceptance.ProductAcceptanceTest;
@@ -35,7 +37,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
         orderTable = TableAcceptanceTest.주문_테이블_등록_되어있음(new OrderTable(3, false)).as(OrderTable.class);
 
-        MenuGroup 추천메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음(new MenuGroup("추천메뉴")).as(MenuGroup.class);
+        MenuGroup 추천메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음(new MenuGroupRequest("추천메뉴")).as(MenuGroup.class);
 
         ProductResponse 양념치킨 = ProductAcceptanceTest.상품_등록되어_있음(new ProductRequest("양념치킨", BigDecimal.valueOf(16000))).as(ProductResponse.class);
         ProductResponse 후라이드치킨 = ProductAcceptanceTest.상품_등록되어_있음(new ProductRequest("후라이드치킨", BigDecimal.valueOf(15000))).as(ProductResponse.class);

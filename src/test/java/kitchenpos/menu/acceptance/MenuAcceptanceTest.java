@@ -5,8 +5,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest;
 import kitchenpos.product.acceptance.ProductAcceptanceTest;
 import kitchenpos.product.domain.Product;
@@ -35,7 +36,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        MenuGroup 추천메뉴 = new MenuGroup("추천메뉴");
+        MenuGroupRequest 추천메뉴 = new MenuGroupRequest("추천메뉴");
         ProductRequest 양념치킨_product = new ProductRequest("양념치킨", BigDecimal.valueOf(16000));
         ProductRequest 후라이드치킨_product = new ProductRequest("후라이드치킨", BigDecimal.valueOf(15000));
 

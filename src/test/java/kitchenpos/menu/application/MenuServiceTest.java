@@ -2,10 +2,10 @@ package kitchenpos.menu.application;
 
 import kitchenpos.application.MenuService;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ public class MenuServiceTest {
     private MenuDao menuDao;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
     private MenuProductDao menuProductDao;
@@ -59,7 +59,7 @@ public class MenuServiceTest {
         // given
         Product product = new Product("후라이드", new BigDecimal(10000));
 
-        when(menuGroupDao.existsById(1L)).thenReturn(true);
+        when(menuGroupRepository.existsById(1L)).thenReturn(true);
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(menuDao.save(menu)).thenReturn(menu);
         when(menuProductDao.save(menuProduct)).thenReturn(menuProduct);
@@ -93,7 +93,7 @@ public class MenuServiceTest {
         // given
         Product product = new Product("후라이드", new BigDecimal(5000));
 
-        when(menuGroupDao.existsById(1L)).thenReturn(true);
+        when(menuGroupRepository.existsById(1L)).thenReturn(true);
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
         // when & then
