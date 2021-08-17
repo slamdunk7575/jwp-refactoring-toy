@@ -46,7 +46,6 @@ public class MenuGroupServiceTest extends BaseServiceTest {
                 .collect(Collectors.toList()))
                 .containsAll(Arrays.asList("두마리메뉴", "한마리메뉴",
                         "순살파닭두마리메뉴", "신메뉴"));
-
-
     }
+    
 }
