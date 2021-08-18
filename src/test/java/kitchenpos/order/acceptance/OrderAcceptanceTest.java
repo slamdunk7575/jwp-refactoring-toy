@@ -4,17 +4,15 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.common.domain.quantity.Quantity;
 import kitchenpos.domain.*;
 import kitchenpos.menu.acceptance.MenuAcceptanceTest;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.acceptance.MenuGroupAcceptanceTest;
 import kitchenpos.ordertable.acceptancetest.TableAcceptanceTest;
 import kitchenpos.product.acceptance.ProductAcceptanceTest;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrderAcceptanceTest extends AcceptanceTest {
 
     private OrderTable orderTable;
-    private Menu menu;
+    private MenuResponse menuResponse;
 
     @BeforeEach
     public void setUp() {
@@ -43,21 +41,21 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
         MenuGroup 추천메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음(new MenuGroupRequest("추천메뉴")).as(MenuGroup.class);
 
-        Product 양념치킨 = ProductAcceptanceTest.상품_등록되어_있음(new ProductRequest("양념치킨", BigDecimal.valueOf(16000))).as(Product.class);
-        Product 후라이드치킨 = ProductAcceptanceTest.상품_등록되어_있음(new ProductRequest("후라이드치킨", BigDecimal.valueOf(15000))).as(Product.class);
+        ProductResponse 양념치킨 = ProductAcceptanceTest.상품_등록되어_있음(new ProductRequest("양념치킨", BigDecimal.valueOf(16000))).as(ProductResponse.class);
+        ProductResponse 후라이드치킨 = ProductAcceptanceTest.상품_등록되어_있음(new ProductRequest("후라이드치킨", BigDecimal.valueOf(15000))).as(ProductResponse.class);
 
-        MenuProduct 양념치킨_menuProduct = new MenuProduct(양념치킨, Quantity.of(1));
-        MenuProduct 후라이드치킨_menuProduct = new MenuProduct(후라이드치킨, Quantity.of(1));
+        MenuProductRequest 양념치킨_menuProduct = new MenuProductRequest(양념치킨.getId(), 1);
+        MenuProductRequest 후라이드치킨_menuProduct = new MenuProductRequest(후라이드치킨.getId(), 1);
 
-        menu = MenuAcceptanceTest.메뉴_등록_되어있음("양념+후라이드", BigDecimal.valueOf(31000), 추천메뉴,
-                Arrays.asList(양념치킨_menuProduct, 후라이드치킨_menuProduct)).as(Menu.class);
+        menuResponse = MenuAcceptanceTest.메뉴_등록_되어있음("양념+후라이드", BigDecimal.valueOf(31000), 추천메뉴,
+                Arrays.asList(양념치킨_menuProduct, 후라이드치킨_menuProduct)).as(MenuResponse.class);
     }
 
     @DisplayName("주문을 관리한다.")
     @Test
     void manageOrder() {
         // given
-        Order order = new Order(orderTable.getId(), Arrays.asList(new OrderLineItem(menu.getId(), 1L)));
+        Order order = new Order(orderTable.getId(), Arrays.asList(new OrderLineItem(menuResponse.getId(), 1L)));
 
         // when
         ExtractableResponse<Response> createResponse = 주문_생성_요청(order);
