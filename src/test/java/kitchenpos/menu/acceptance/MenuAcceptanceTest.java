@@ -4,9 +4,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.common.domain.quantity.Quantity;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest;
 import kitchenpos.product.acceptance.ProductAcceptanceTest;
@@ -49,11 +50,22 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMenu() {
         // given
-        MenuProduct 양념치킨_menuProduct = new MenuProduct(양념치킨.getId(), 1);
-        MenuProduct 후라이드치킨_menuProduct = new MenuProduct(후라이드치킨.getId(), 1);
+        MenuProduct 양념치킨_menuProduct = new MenuProduct(양념치킨, Quantity.of(1));
+        MenuProduct 후라이드치킨_menuProduct = new MenuProduct(후라이드치킨, Quantity.of(1));
 
-        Menu 잘못된_가격 = new Menu("양념후라이드세트", BigDecimal.valueOf(32000), 추천메뉴.getId(), Arrays.asList(양념치킨_menuProduct, 후라이드치킨_menuProduct));
-        Menu 올바른_가격 = new Menu("양념후라이드세트", BigDecimal.valueOf(31000), 추천메뉴.getId(), Arrays.asList(양념치킨_menuProduct, 후라이드치킨_menuProduct));
+        Menu 잘못된_가격 = new Menu.Builder()
+                .name("양념후라이드세트")
+                .price(BigDecimal.valueOf(32000))
+                .menuGroup(추천메뉴)
+                .menuProducts(Arrays.asList(양념치킨_menuProduct, 후라이드치킨_menuProduct))
+                .build();
+
+        Menu 올바른_가격 = new Menu.Builder()
+                .name("양념후라이드세트")
+                .price(BigDecimal.valueOf(31000))
+                .menuGroup(추천메뉴)
+                .menuProducts(Arrays.asList(양념치킨_menuProduct, 후라이드치킨_menuProduct))
+                .build();
 
         // when
         ExtractableResponse<Response> wrongResponse = 메뉴_등록_요청(잘못된_가격);
@@ -116,6 +128,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 메뉴_등록_되어있음(String menuName, BigDecimal menuPrice, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return 메뉴_등록_요청(new Menu(menuName, menuPrice, menuGroup.getId(), menuProducts));
+        return 메뉴_등록_요청(new Menu.Builder()
+                .name(menuName)
+                .price(menuPrice)
+                .menuGroup(menuGroup)
+                .menuProducts(menuProducts)
+                .build());
     }
 }
