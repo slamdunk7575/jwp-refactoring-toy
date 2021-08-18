@@ -35,6 +35,7 @@ public class Menu {
         this.price = builder.price;
         this.menuGroup = builder.menuGroup;
         this.menuProducts = validateMenuProducts(builder.menuProducts);
+        updateMenuProducts(this.menuProducts);
     }
 
     private MenuProducts validateMenuProducts(List<MenuProduct> menuProducts) {
@@ -57,12 +58,12 @@ public class Menu {
         return name;
     }
 
-    public Price getPrice() {
-        return price;
+    public BigDecimal getPrice() {
+        return price.value();
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroup.getId();
     }
 
     public MenuProducts getMenuProducts() {
