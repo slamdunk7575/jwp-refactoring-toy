@@ -1,4 +1,4 @@
-package kitchenpos.menugroup.domain;
+package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.name.InvalidNameException;
 import kitchenpos.menu.domain.MenuGroup;
