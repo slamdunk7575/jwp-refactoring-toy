@@ -1,11 +1,13 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.application.MenuService;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.common.domain.quantity.Quantity;
 import kitchenpos.menu.dao.MenuGroupRepository;
+import kitchenpos.menu.dao.MenuProductRepository;
+import kitchenpos.menu.dao.MenuRepository;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,13 +31,13 @@ import static org.mockito.Mockito.when;
 public class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @Mock
     private ProductRepository productRepository;
@@ -45,12 +47,23 @@ public class MenuServiceTest {
 
     private Menu menu;
 
-    private MenuProduct menuProduct;
+    private MenuGroup menuGroup;
+
+    private MenuProduct menuProductFried;
+
+    private MenuProduct menuProductSeasoned;
 
     @BeforeEach
     void setUp() {
-        menuProduct = new MenuProduct(1L, 2);
-        menu = new Menu("후라이드+후라이드", new BigDecimal(19000), 1L, Arrays.asList(menuProduct));
+        menuProductFried = new MenuProduct(new Product("후라이드", new BigDecimal(10000)), Quantity.of(1L));
+        menuProductSeasoned = new MenuProduct(new Product("양념", new BigDecimal(10000)), Quantity.of(1L));
+        menuGroup = new MenuGroup("추천메뉴");
+        menu = new Menu.Builder()
+                .name("후라이드+후라이드")
+                .price(BigDecimal.valueOf(19000))
+                .menuGroup(menuGroup)
+                .menuProducts(Arrays.asList(menuProductFried, menuProductSeasoned))
+                .build();
     }
 
     @DisplayName("메뉴를 생성할 수 있다.")
@@ -61,8 +74,9 @@ public class MenuServiceTest {
 
         when(menuGroupRepository.existsById(1L)).thenReturn(true);
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(menuDao.save(menu)).thenReturn(menu);
-        when(menuProductDao.save(menuProduct)).thenReturn(menuProduct);
+        when(menuRepository.save(menu)).thenReturn(menu);
+        when(menuProductRepository.save(menuProductFried)).thenReturn(menuProductFried);
+        when(menuProductRepository.save(menuProductSeasoned)).thenReturn(menuProductSeasoned);
 
         // when
         Menu createMenu = menuService.create(this.menu);
@@ -71,7 +85,7 @@ public class MenuServiceTest {
         assertThat(createMenu.getId()).isEqualTo(menu.getId());
         assertThat(createMenu.getName()).isEqualTo(menu.getName());
         assertThat(createMenu.getPrice()).isEqualTo(menu.getPrice());
-        assertThat(createMenu.getMenuGroupId()).isEqualTo(menu.getMenuGroupId());
+        assertThat(createMenu.getMenuGroup()).isEqualTo(menu.getMenuGroup());
         assertThat(createMenu.getMenuProducts()).isEqualTo(menu.getMenuProducts());
     }
 
@@ -79,11 +93,16 @@ public class MenuServiceTest {
     @Test
     void createMenuPriceException() {
         // given
-        menu.setPrice(new BigDecimal(-1000));
+        Menu banBanMenu = new Menu.Builder()
+                .name("후라이드+양념")
+                .price(BigDecimal.valueOf(-10000))
+                .menuGroup(menuGroup)
+                .menuProducts(Arrays.asList(menuProductFried, menuProductSeasoned))
+                .build();
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            menuService.create(menu);
+            menuService.create(banBanMenu);
         });
     }
 
@@ -106,7 +125,7 @@ public class MenuServiceTest {
     @Test
     void findAllMenus() {
         // given
-        when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
+        when(menuRepository.findAll()).thenReturn(Arrays.asList(menu));
 
         // when
         List<Menu> menus = menuService.list();
@@ -115,7 +134,7 @@ public class MenuServiceTest {
         assertThat(menus.get(0).getId()).isEqualTo(menu.getId());
         assertThat(menus.get(0).getName()).isEqualTo(menu.getName());
         assertThat(menus.get(0).getPrice()).isEqualTo(menu.getPrice());
-        assertThat(menus.get(0).getMenuGroupId()).isEqualTo(menu.getMenuGroupId());
+        assertThat(menus.get(0).getMenuGroup()).isEqualTo(menu.getMenuGroup());
         assertThat(menus.get(0).getMenuProducts()).isEqualTo(menu.getMenuProducts());
     }
 

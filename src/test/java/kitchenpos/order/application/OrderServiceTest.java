@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
 import kitchenpos.application.OrderService;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
@@ -9,6 +8,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.dao.MenuRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import static org.mockito.BDDMockito.given;
 public class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderDao orderDao;
@@ -57,7 +57,7 @@ public class OrderServiceTest {
     void createOrder() {
         // given
         Long menuId = orderLineItem.getMenuId();
-        given(menuDao.countByIdIn(Arrays.asList(menuId))).willReturn(1L);
+        // given(menuRepository.countByIdIn(Arrays.asList(menuId))).willReturn(1L);
 
         OrderTable orderTable = new OrderTable();
         orderTable.setId(order.getOrderTableId());
@@ -94,7 +94,7 @@ public class OrderServiceTest {
     void notCreateStatusIsEmpty() {
         // given
         Long menuId = orderLineItem.getMenuId();
-        given(menuDao.countByIdIn(Arrays.asList(menuId))).willReturn(1L);
+        // given(menuDao.countByIdIn(Arrays.asList(menuId))).willReturn(1L);
 
         OrderTable orderTable = new OrderTable();
         orderTable.setId(order.getOrderTableId());

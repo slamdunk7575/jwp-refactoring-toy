@@ -13,9 +13,13 @@ public class Quantity {
     protected Quantity() {
     }
 
-    public Quantity(long quantity) {
+    private Quantity(long quantity) {
         validateQuantity(quantity);
         this.quantity = quantity;
+    }
+
+    public static Quantity of(long quantity) {
+        return new Quantity(quantity);
     }
 
     private void validateQuantity(long quantity) {
