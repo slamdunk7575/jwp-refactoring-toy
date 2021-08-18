@@ -1,21 +1,22 @@
 package kitchenpos.application;
 
-import kitchenpos.common.domain.price.Price;
 import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuProductRepository;
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
@@ -33,44 +34,45 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
-        Price price = menu.getPrice();
+    public MenuResponse create(final MenuRequest menuRequest) {
+        Menu menu = new Menu.Builder()
+                .name(menuRequest.getName())
+                .price(menuRequest.getPrice())
+                .menuGroup(findMenuGroup(menuRequest.getMenuGroupId()))
+                .menuProducts(findMenuProducts(menuRequest.getMenuProducts()))
+                .build();
 
-        if (Objects.isNull(price) || price.value().compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        if (!menuGroupRepository.existsById(menu.getMenuGroup().getId())) {
-            throw new IllegalArgumentException();
-        }
-
-        final MenuProducts menuProducts = menu.getMenuProducts();
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts.findAll()) {
-            final Product product = productRepository.findById(menuProduct.getProduct().getId())
-                    .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity().value())));
-        }
-
-        if (price.value().compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final Menu savedMenu = menuRepository.save(menu);
-
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts.findAll()) {
-            menuProduct.updateMenu(savedMenu);
-            savedMenuProducts.add(menuProductRepository.save(menuProduct));
-        }
-        savedMenu.updateMenuProducts(new MenuProducts(savedMenuProducts));
-
-        return savedMenu;
+        return MenuResponse.of(menuRepository.save(menu));
     }
 
-    public List<Menu> list() {
+    private MenuGroup findMenuGroup(Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴 그룹 입니다."));
+    }
+
+    private List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProductRequests) {
+        List<MenuProduct> menuProducts = new ArrayList<>();
+
+        List<Long> menuProductIds = menuProductRequests.stream()
+                .map(menuProduct -> menuProduct.getProductId())
+                .collect(Collectors.toList());
+
+        List<Product> products = productRepository.findAllById(menuProductIds);
+
+        for (MenuProductRequest menuProductRequest : menuProductRequests) {
+            menuProducts.add(products.stream()
+                    .filter(menuProductRequest::isSameProductId)
+                    .map(product -> new MenuProduct(product, menuProductRequest.getQuantity()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 상품입니다.")));
+        }
+
+        return menuProducts;
+    }
+
+    @Transactional(readOnly = true)
+    public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
-        return menus;
+        return MenuResponse.ofList(menus);
     }
 }

@@ -28,9 +28,9 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, Quantity quantity) {
+    public MenuProduct(Product product, long quantity) {
         this.product = product;
-        this.quantity = quantity;
+        this.quantity = Quantity.of(quantity);
     }
 
     public void updateMenu(Menu menu) {
@@ -41,12 +41,16 @@ public class MenuProduct {
         return product.calculatePrice(quantity);
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getId() {
+        return id;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getMenuId() {
+        return menu.getId();
+    }
+
+    public Long getProductId() {
+        return product.getId();
     }
 
     public Quantity getQuantity() {

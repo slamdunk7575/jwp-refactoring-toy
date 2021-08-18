@@ -1,141 +1,127 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.BaseServiceTest;
 import kitchenpos.application.MenuService;
-import kitchenpos.common.domain.quantity.Quantity;
-import kitchenpos.menu.dao.MenuGroupRepository;
-import kitchenpos.menu.dao.MenuProductRepository;
-import kitchenpos.menu.dao.MenuRepository;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.dao.ProductRepository;
-import kitchenpos.product.domain.Product;
+import kitchenpos.common.domain.price.InvalidPriceException;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
-public class MenuServiceTest {
+public class MenuServiceTest extends BaseServiceTest {
 
-    @Mock
-    private MenuRepository menuRepository;
-
-    @Mock
-    private MenuGroupRepository menuGroupRepository;
-
-    @Mock
-    private MenuProductRepository menuProductRepository;
-
-    @Mock
-    private ProductRepository productRepository;
-
-    @InjectMocks
+    @Autowired
     private MenuService menuService;
 
-    private Menu menu;
+    private MenuProductRequest menuProductRequest_후라이드;
+    private MenuProductRequest menuProductRequest_양념;
+    private List<MenuProductRequest> menuProductRequests;
 
-    private MenuGroup menuGroup;
-
-    private MenuProduct menuProductFried;
-
-    private MenuProduct menuProductSeasoned;
+    private String 새로운_메뉴_name;
+    private BigDecimal 새로운_메뉴_price;
+    private Long 새로운_메뉴_menu_group_id;
 
     @BeforeEach
     void setUp() {
-        menuProductFried = new MenuProduct(new Product("후라이드", new BigDecimal(10000)), Quantity.of(1L));
-        menuProductSeasoned = new MenuProduct(new Product("양념", new BigDecimal(10000)), Quantity.of(1L));
-        menuGroup = new MenuGroup("추천메뉴");
-        menu = new Menu.Builder()
-                .name("후라이드+후라이드")
-                .price(BigDecimal.valueOf(19000))
-                .menuGroup(menuGroup)
-                .menuProducts(Arrays.asList(menuProductFried, menuProductSeasoned))
-                .build();
+        menuProductRequest_후라이드 = new MenuProductRequest(1L, 1);
+        menuProductRequest_양념 = new MenuProductRequest(2L, 1);
+        menuProductRequests = Arrays.asList(menuProductRequest_후라이드, menuProductRequest_양념);
+        새로운_메뉴_name = "후라이드+양념";
+        새로운_메뉴_price = BigDecimal.valueOf(25000);
+        새로운_메뉴_menu_group_id = 1L;
     }
 
-    @DisplayName("메뉴를 생성할 수 있다.")
+    @DisplayName("메뉴를 등록할 수 있다.")
     @Test
     void createMenu() {
         // given
-        Product product = new Product("후라이드", new BigDecimal(10000));
-
-        when(menuGroupRepository.existsById(1L)).thenReturn(true);
-        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(menuRepository.save(menu)).thenReturn(menu);
-        when(menuProductRepository.save(menuProductFried)).thenReturn(menuProductFried);
-        when(menuProductRepository.save(menuProductSeasoned)).thenReturn(menuProductSeasoned);
+        MenuRequest menuRequest = new MenuRequest(새로운_메뉴_name, 새로운_메뉴_price, 새로운_메뉴_menu_group_id, menuProductRequests);
 
         // when
-        Menu createMenu = menuService.create(this.menu);
+        MenuResponse result = menuService.create(menuRequest);
 
         // then
-        assertThat(createMenu.getId()).isEqualTo(menu.getId());
-        assertThat(createMenu.getName()).isEqualTo(menu.getName());
-        assertThat(createMenu.getPrice()).isEqualTo(menu.getPrice());
-        assertThat(createMenu.getMenuGroup()).isEqualTo(menu.getMenuGroup());
-        assertThat(createMenu.getMenuProducts()).isEqualTo(menu.getMenuProducts());
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getName()).isEqualTo(새로운_메뉴_name);
+        assertThat(result.getPrice()).isEqualByComparingTo(새로운_메뉴_price);
+        assertThat(result.getMenuGroupId()).isEqualTo(1L);
+        assertThat(result.getMenuProducts().size()).isEqualTo(2);
+        assertThat(result.getMenuProducts().get(0).getProductId()).isEqualTo(1L);
+        assertThat(result.getMenuProducts().get(1).getProductId()).isEqualTo(2L);
     }
 
-    @DisplayName("메뉴의 가격은 0원 이상이어야 한다.")
+    @DisplayName("메뉴 등록시 가격은 필수정보이다.")
     @Test
-    void createMenuPriceException() {
+    void requireMenuPrice() {
         // given
-        Menu banBanMenu = new Menu.Builder()
-                .name("후라이드+양념")
-                .price(BigDecimal.valueOf(-10000))
-                .menuGroup(menuGroup)
-                .menuProducts(Arrays.asList(menuProductFried, menuProductSeasoned))
-                .build();
+        MenuRequest menuRequest = new MenuRequest(새로운_메뉴_name, null, 새로운_메뉴_menu_group_id, menuProductRequests);
+
+        // when & then
+        assertThatThrownBy(() -> menuService.create(menuRequest))
+                .isInstanceOf(InvalidPriceException.class)
+                .hasMessage("가격은 0원 이상이어야 합니다.");
+    }
+
+    @DisplayName("메뉴 그룹이 등록되어 있어야 한다.")
+    @Test
+    void notExistMenuGroup() {
+        // given
+        MenuRequest menuRequest = new MenuRequest(새로운_메뉴_name, 새로운_메뉴_price, 0L, menuProductRequests);
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            menuService.create(banBanMenu);
-        });
+            MenuResponse menuResponse = menuService.create(menuRequest);
+        }).withMessageMatching("등록되지 않은 메뉴 그룹 입니다.");
     }
 
-    @DisplayName("메뉴의 가격이 메뉴에 속한 상품 가격의 합보다 크지 않아야 한다.")
-    @Test
-    void createMenuPriceOverException() {
-        // given
-        Product product = new Product("후라이드", new BigDecimal(5000));
 
-        when(menuGroupRepository.existsById(1L)).thenReturn(true);
-        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+    @DisplayName("상품이 등록되어 있어야 한다.")
+    @Test
+    void notExistProduct() {
+        // given
+        MenuProductRequest notExistProduct = new MenuProductRequest(0L, 1);
+        MenuRequest menuRequest = new MenuRequest(새로운_메뉴_name, 새로운_메뉴_price, 새로운_메뉴_menu_group_id, Arrays.asList(notExistProduct));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            menuService.create(menu);
-        });
+            MenuResponse menuResponse = menuService.create(menuRequest);
+        }).withMessageMatching("등록되지 않은 상품입니다.");
+    }
+
+    @DisplayName("메뉴 가격이 속한 상품들 가격의 합보다 크지 않아야 한다.")
+    @Test
+    void createMenuPriceGreaterThanSum() {
+        // given
+        BigDecimal wrongPrice = 새로운_메뉴_price.add(BigDecimal.valueOf(10000));
+        MenuRequest menuRequest = new MenuRequest(새로운_메뉴_name, wrongPrice, 새로운_메뉴_menu_group_id, menuProductRequests);
+
+        // when & then
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            MenuResponse menuResponse = menuService.create(menuRequest);
+        }).withMessageMatching("메뉴 가격이 속한 상품들 가격 합보다 비쌉니다.");
     }
 
     @DisplayName("메뉴의 목록을 조회할 수 있다.")
     @Test
     void findAllMenus() {
-        // given
-        when(menuRepository.findAll()).thenReturn(Arrays.asList(menu));
-
         // when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menuResponses = menuService.list();
 
         // then
-        assertThat(menus.get(0).getId()).isEqualTo(menu.getId());
-        assertThat(menus.get(0).getName()).isEqualTo(menu.getName());
-        assertThat(menus.get(0).getPrice()).isEqualTo(menu.getPrice());
-        assertThat(menus.get(0).getMenuGroup()).isEqualTo(menu.getMenuGroup());
-        assertThat(menus.get(0).getMenuProducts()).isEqualTo(menu.getMenuProducts());
+        assertThat(menuResponses).isNotEmpty();
+        assertThat(menuResponses.stream()
+                .map(MenuResponse::getName)
+                .collect(Collectors.toList()))
+                .containsAll(Arrays.asList("후라이드치킨", "양념치킨", "반반치킨", "간장치킨", "순살치킨"));
     }
-
 }

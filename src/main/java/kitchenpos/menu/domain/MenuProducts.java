@@ -23,7 +23,7 @@ public class MenuProducts {
     }
 
     public void updateMenu(Menu menu) {
-        validateMenuPrice(menu.getPrice());
+        validateMenuPrice(new Price(menu.getPrice()));
         menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
     }
 
