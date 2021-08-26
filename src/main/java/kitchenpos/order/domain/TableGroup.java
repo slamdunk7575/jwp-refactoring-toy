@@ -14,7 +14,7 @@ public class TableGroup {
     private Long id;
 
     @CreatedDate
-    private LocalDateTime createDate = LocalDateTime.now();
+    private LocalDateTime createdDate = LocalDateTime.now();
 
     @Embedded
     private OrderTables orderTables;
@@ -24,6 +24,10 @@ public class TableGroup {
 
     public TableGroup(final OrderTables orderTables) {
         updateOrderTables(orderTables);
+    }
+
+    public TableGroup(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     public void updateOrderTables(OrderTables orderTables) {
@@ -41,7 +45,7 @@ public class TableGroup {
     }
 
     public LocalDateTime getCreateDate() {
-        return createDate;
+        return createdDate;
     }
 
     public OrderTables getOrderTables() {

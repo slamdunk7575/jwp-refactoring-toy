@@ -28,14 +28,13 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) {
-        this(id, null, numberOfGuests, empty);
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this(null, numberOfGuests, empty);
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests, boolean empty) {
-        this.id = id;
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
@@ -45,7 +44,7 @@ public class OrderTable {
 
     public void checkOrderTableEmptyOrAssigned() {
         if (!empty || Objects.nonNull(tableGroup)) {
-            throw new IllegalReceiveException("비어있지 않거나 이미 그룹이 지정된 테이블은 그룹 지정을 할 수 없습니다. ");
+            throw new IllegalArgumentException("비어있지 않거나 이미 그룹이 지정된 테이블은 그룹 지정을 할 수 없습니다.");
         }
     }
 
@@ -96,5 +95,9 @@ public class OrderTable {
 
     public Long getId() {
         return id;
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 }
