@@ -78,7 +78,7 @@ public class OrderTable {
 
     private void checkOrderTableGroup() {
         if (Objects.nonNull(tableGroup)) {
-            throw new IllegalReceiveException("그룹 지정이 되어있어 상태를 변경할 수 없습니다.");
+            throw new IllegalArgumentException("그룹 지정이 되어있어 상태를 변경할 수 없습니다.");
         }
     }
 
@@ -99,5 +99,9 @@ public class OrderTable {
 
     public TableGroup getTableGroup() {
         return tableGroup;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests.value();
     }
 }
