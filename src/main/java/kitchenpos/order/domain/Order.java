@@ -50,7 +50,7 @@ public class Order {
 
     private OrderLineItems validateOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문은 1개 이상의 메뉴가 포함되어 있어야 한다.");
+            throw new IllegalArgumentException("주문은 1개 이상의 메뉴가 포함되어 있어야 합니다.");
         }
         return new OrderLineItems(orderLineItems);
     }
@@ -66,6 +66,7 @@ public class Order {
 
     public void updateOrderStatus(String orderStatus) {
         checkOrderStatus();
+        this.orderStatus = OrderStatus.valueOf(orderStatus);
     }
 
     private void checkOrderStatus() {

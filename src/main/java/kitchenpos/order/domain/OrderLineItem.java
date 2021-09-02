@@ -26,14 +26,14 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, Quantity quantity) {
+    public OrderLineItem(Menu menu, long quantity) {
         this(null, menu, quantity);
     }
 
-    public OrderLineItem(Long id, Menu menu, Quantity quantity) {
+    public OrderLineItem(Long id, Menu menu, long quantity) {
         this.id = id;
         this.menu = menu;
-        this.quantity = quantity;
+        this.quantity = Quantity.of(quantity);
     }
 
     public void updateOrder(Order order) {
