@@ -33,6 +33,11 @@ public class OrderTable {
     }
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this(null, tableGroup, numberOfGuests, empty);
+    }
+
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
@@ -97,8 +102,12 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        if (Objects.nonNull(tableGroup)){
+            return tableGroup.getId();
+        }
+
+        return null;
     }
 
     public int getNumberOfGuests() {

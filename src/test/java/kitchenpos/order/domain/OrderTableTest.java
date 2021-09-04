@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.*;
 
 public class OrderTableTest {
 
-    private TableGroup 등록된_그룹 = new TableGroup(LocalDateTime.now());
+    private TableGroup 등록된_그룹 = new TableGroup(1L, LocalDateTime.now());
     private OrderTable 그룹이_지정된_빈_테이블;
     private OrderTable 그룹이_지정되지_않은_빈_테이블;
     private OrderTable 그룹이_지정되지_않은_비어있지_않은_테이블;
@@ -29,7 +29,7 @@ public class OrderTableTest {
         그룹이_지정되지_않은_빈_테이블.updateTableGroup(등록된_그룹);
 
         // then
-        assertThat(그룹이_지정되지_않은_빈_테이블.getTableGroup()).isNotNull();
+        assertThat(그룹이_지정되지_않은_빈_테이블.getTableGroupId()).isNotNull();
         assertThat(그룹이_지정되지_않은_빈_테이블.isEmpty()).isFalse();
     }
 

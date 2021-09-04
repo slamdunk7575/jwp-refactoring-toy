@@ -42,14 +42,23 @@ public class OrderTables {
     }
 
     public void checkOrderTableStatus() {
-        boolean hasNotCompletedOrder = orderTables.stream().anyMatch(OrderTable::isNotComplete);
+        boolean hasNotCompletedOrder = orderTables.stream()
+                .anyMatch(OrderTable::isNotComplete);
 
         if (hasNotCompletedOrder) {
-            throw new IllegalReceiveException("주문 상태가 조리중이거나 식사중인 테이블의 그룹 지정은 해제할 수 없습니다.");
+            throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 그룹 지정은 해제할 수 없습니다.");
         }
     }
 
     public void unGroup() {
         this.orderTables.forEach(OrderTable::unGroup);
+    }
+
+    public List<OrderTable> findAll() {
+        return orderTables;
+    }
+
+    public boolean isSameSize(int otherSize) {
+        return this.orderTables.size() == otherSize;
     }
 }
