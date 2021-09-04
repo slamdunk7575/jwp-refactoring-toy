@@ -19,11 +19,11 @@ class TableGroupTest {
 
     @BeforeEach
     void setUp() {
-        그룹_테이블_1 = new TableGroup(LocalDateTime.now());
-        빈테이블_1 = new OrderTable(null, 0, true);
-        빈테이블_2 = new OrderTable(null, 0, true);
-        비어있지_않은_주문_테이블_3 = new OrderTable(null, 0, false);
-        그룹_지정된_테이블_1 = new OrderTable(그룹_테이블_1, 0, false);
+        그룹_테이블_1 = new TableGroup(1L, LocalDateTime.of(2020, 9, 4, 10, 30));
+        빈테이블_1 = new OrderTable(1L, null, 0, true);
+        빈테이블_2 = new OrderTable(2L, null, 0, true);
+        비어있지_않은_주문_테이블_3 = new OrderTable(2L, null, 0, false);
+        그룹_지정된_테이블_1 = new OrderTable(10L, 그룹_테이블_1, 0, false);
     }
 
     @DisplayName("단체 지정을 생성한다.")
@@ -37,8 +37,8 @@ class TableGroupTest {
 
         // then
         assertThat(그룹_테이블_1).isNotNull();
-        assertThat(빈테이블_1.getTableGroup()).isNotNull();
-        assertThat(빈테이블_2.getTableGroup()).isNotNull();
+        assertThat(빈테이블_1.getTableGroupId()).isNotNull();
+        assertThat(빈테이블_2.getTableGroupId()).isNotNull();
     }
 
     @DisplayName("주문 테이블 상태가 비어있음이 아니면 단체 지정을 할 수 없다.")
@@ -71,7 +71,7 @@ class TableGroupTest {
         그룹_테이블_1.unGroup();
 
         // then
-        assertThat(빈테이블_1.getTableGroup()).isNull();
-        assertThat(빈테이블_2.getTableGroup()).isNull();
+        assertThat(빈테이블_1.getTableGroupId()).isNull();
+        assertThat(빈테이블_2.getTableGroupId()).isNull();
     }
 }
