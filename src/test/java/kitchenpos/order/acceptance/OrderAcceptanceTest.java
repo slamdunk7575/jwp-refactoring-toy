@@ -11,7 +11,8 @@ import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.acceptance.MenuGroupAcceptanceTest;
-import kitchenpos.ordertable.acceptancetest.TableAcceptanceTest;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.product.acceptance.ProductAcceptanceTest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -37,7 +38,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        orderTable = TableAcceptanceTest.주문_테이블_등록_되어있음(new OrderTable(3, false)).as(OrderTable.class);
+        orderTable = OrderTableAcceptanceTest.주문_테이블_등록_되어있음(new OrderTableRequest(3, false)).as(OrderTable.class);
 
         MenuGroup 추천메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음(new MenuGroupRequest("추천메뉴")).as(MenuGroup.class);
 

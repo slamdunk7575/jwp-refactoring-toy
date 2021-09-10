@@ -3,12 +3,12 @@ package kitchenpos.order.application;
 import kitchenpos.application.OrderService;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.dao.MenuRepository;
+import kitchenpos.order.dao.OrderTableRepository;
+import kitchenpos.order.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ public class OrderServiceTest {
     private OrderLineItemDao orderLineItemDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -59,9 +59,8 @@ public class OrderServiceTest {
         Long menuId = orderLineItem.getMenuId();
         // given(menuRepository.countByIdIn(Arrays.asList(menuId))).willReturn(1L);
 
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(order.getOrderTableId());
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        OrderTable orderTable = new OrderTable(order.getOrderTableId(), null, 0, false);
+        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         given(orderDao.save(order)).willReturn(order);
         given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);
@@ -96,10 +95,8 @@ public class OrderServiceTest {
         Long menuId = orderLineItem.getMenuId();
         // given(menuDao.countByIdIn(Arrays.asList(menuId))).willReturn(1L);
 
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(order.getOrderTableId());
-        orderTable.setEmpty(true);
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        OrderTable orderTable = new OrderTable(order.getOrderTableId(), null, 0, true);
+        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
