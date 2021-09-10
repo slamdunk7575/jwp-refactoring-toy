@@ -12,7 +12,7 @@ public class BaseServiceTest {
     private DatabaseCleanup databaseCleanup;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         databaseCleanup.execute();
     }
 }

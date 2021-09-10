@@ -32,7 +32,8 @@ public class MenuServiceTest extends BaseServiceTest {
     private Long 새로운_메뉴_menu_group_id;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
+        super.setUp();
         menuProductRequest_후라이드 = new MenuProductRequest(1L, 1);
         menuProductRequest_양념 = new MenuProductRequest(2L, 1);
         menuProductRequests = Arrays.asList(menuProductRequest_후라이드, menuProductRequest_양념);

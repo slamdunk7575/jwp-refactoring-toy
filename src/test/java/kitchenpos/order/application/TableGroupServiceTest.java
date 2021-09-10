@@ -39,7 +39,8 @@ public class TableGroupServiceTest extends BaseServiceTest {
     private OrderTable 그룹_지정된_테이블_1;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
+        super.setUp();
         빈테이블_1 = new OrderTable(1L,null, 0, true);
         빈테이블_2 = new OrderTable(2L, null, 0, true);
         비어있지_않은_테이블_1 = new OrderTable(9L, null, 5, false);
