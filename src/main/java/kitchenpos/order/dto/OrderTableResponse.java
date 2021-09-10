@@ -29,7 +29,7 @@ public class OrderTableResponse {
                 orderTable.isEmpty());
     }
 
-    public List<OrderTableResponse> ofList(List<OrderTable> orderTables) {
+    public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {
         return orderTables.stream()
                 .map(OrderTableResponse::of)
                 .collect(Collectors.toList());
