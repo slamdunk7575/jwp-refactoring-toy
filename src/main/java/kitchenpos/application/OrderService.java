@@ -1,7 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -18,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Service
+/*@Service
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderDao orderDao;
@@ -101,4 +99,4 @@ public class OrderService {
 
         return savedOrder;
     }
-}
+}*/
