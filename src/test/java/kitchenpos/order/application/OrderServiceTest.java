@@ -1,156 +1,94 @@
 package kitchenpos.order.application;
 
-import kitchenpos.application.OrderService;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.menu.dao.MenuRepository;
-import kitchenpos.order.dao.OrderTableRepository;
+import kitchenpos.BaseServiceTest;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
+import static kitchenpos.util.TestFixture.메뉴상품_양념;
+import static kitchenpos.util.TestFixture.메뉴상품_후라이드;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(MockitoExtension.class)
-public class OrderServiceTest {
+public class OrderServiceTest extends BaseServiceTest {
 
-    @Mock
-    private MenuRepository menuRepository;
-
-    @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
-    private OrderTableRepository orderTableRepository;
-
-    @InjectMocks
+    @Autowired
     private OrderService orderService;
 
-    private OrderLineItem orderLineItem;
+    private OrderLineItemRequest orderLineItemRequest1;
+    private OrderLineItemRequest orderLineItemRequest2;
 
-    private Order order;
+    private List<OrderLineItemRequest> orderLineItemRequests;
 
+    private OrderTable 빈_주문_테이블;
+    private OrderTable 비어있지_않은_주문_테이블;
+
+    private Menu 메뉴_후라이드;
+    private Menu 메뉴_양념;
+
+    @Override
     @BeforeEach
-    void setUp() {
-        orderLineItem = new OrderLineItem(1L, 1);
-        order = new Order(1L, Arrays.asList(orderLineItem));
+    public void setUp() {
+        super.setUp();
+
+        빈_주문_테이블 = new OrderTable(1L, null, 0, true);
+        비어있지_않은_주문_테이블 = new OrderTable(9L, null, 5, false);
+
+        MenuGroup 메뉴그룹_한마리_메뉴 = new MenuGroup(2L, "한마리메뉴");
+
+        메뉴_후라이드 = new Menu.Builder()
+                .id(1L)
+                .name("후라이드")
+                .price(BigDecimal.valueOf(16000))
+                .menuGroup(메뉴그룹_한마리_메뉴)
+                .menuProducts(Arrays.asList(메뉴상품_후라이드))
+                .build();
+
+        메뉴_양념 = new Menu.Builder()
+                .id(2L)
+                .name("양념")
+                .price(BigDecimal.valueOf(16000))
+                .menuGroup(메뉴그룹_한마리_메뉴)
+                .menuProducts(Arrays.asList(메뉴상품_양념))
+                .build();
+
+        orderLineItemRequest1 = new OrderLineItemRequest(메뉴_후라이드.getId(), 1);
+        orderLineItemRequest2 = new OrderLineItemRequest(메뉴_양념.getId(), 1);
+        orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
+
     }
 
-    @DisplayName("주문을 생성할 수 있다.")
+    @DisplayName("주문을 등록할 수 있다.")
     @Test
-    void createOrder() {
+    void create() {
         // given
-        Long menuId = orderLineItem.getMenuId();
-        // given(menuRepository.countByIdIn(Arrays.asList(menuId))).willReturn(1L);
-
-        OrderTable orderTable = new OrderTable(order.getOrderTableId(), null, 0, false);
-        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
-
-        given(orderDao.save(order)).willReturn(order);
-        given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);
+        OrderRequest orderRequest = new OrderRequest(비어있지_않은_주문_테이블.getId(), orderLineItemRequests);
 
         // when
-        Order createdOrder = orderService.create(this.order);
+        OrderResponse result = orderService.create(orderRequest);
 
         // then
-        assertThat(createdOrder.getId()).isEqualTo(order.getId());
-        assertThat(createdOrder.getOrderTableId()).isEqualTo(order.getOrderTableId());
-        assertThat(createdOrder.getOrderLineItems()).isEqualTo(order.getOrderLineItems());
-        assertThat(createdOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        assertThat(createdOrder.getOrderedTime()).isNotNull();
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(result.getOrderedTime()).isNotNull();
+        assertThat(result.getOrderTableId()).isNotNull();
+        assertThat(result.getOrderLineItems().size()).isEqualTo(2);
+        assertThat(result.getOrderLineItems().get(0).getOrderId()).isEqualTo(result.getId());
+        assertThat(result.getOrderLineItems().get(0).getMenuId()).isEqualTo(메뉴_후라이드.getId());
+        assertThat(result.getOrderLineItems().get(1).getOrderId()).isEqualTo(result.getId());
+        assertThat(result.getOrderLineItems().get(1).getMenuId()).isEqualTo(메뉴_양념.getId());
     }
 
-    @DisplayName("하나 이상의 주문 항목을 가져야 한다.")
-    @Test
-    void requireLeastOneOrderLineItem() {
-        // given
-        Order order = new Order(1L, null);
 
-        // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-           orderService.create(order);
-        });
-    }
-
-    @DisplayName("주문 테이블 상태가 비어있음인 경우 생성할 수 없다.")
-    @Test
-    void notCreateStatusIsEmpty() {
-        // given
-        Long menuId = orderLineItem.getMenuId();
-        // given(menuDao.countByIdIn(Arrays.asList(menuId))).willReturn(1L);
-
-        OrderTable orderTable = new OrderTable(order.getOrderTableId(), null, 0, true);
-        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
-
-        // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            orderService.create(order);
-        });
-    }
-
-    @DisplayName("주문 목록을 조회할 수 있다.")
-    @Test
-    void findAllOrders() {
-        // given
-        given(orderDao.findAll()).willReturn(Arrays.asList(order));
-
-        // when
-        List<Order> orders = orderService.list();
-
-        // then
-        assertThat(orders.get(0).getId()).isEqualTo(order.getId());
-        assertThat(orders.get(0).getOrderTableId()).isEqualTo(order.getOrderTableId());
-        assertThat(orders.get(0).getOrderLineItems()).isEqualTo(order.getOrderLineItems());
-        assertThat(orders.get(0).getOrderStatus()).isEqualTo(order.getOrderStatus());
-        assertThat(orders.get(0).getOrderedTime()).isEqualTo(order.getOrderedTime());
-    }
-
-    @DisplayName("주문의 상태를 변경할 수 있다.")
-    @Test
-    void changeOrderStatus() {
-        // given
-        order.setOrderStatus(OrderStatus.MEAL.name());
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
-
-        Order order = new Order();
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-
-        // when
-        Order updatedOrder = orderService.changeOrderStatus(this.order.getId(), order);
-
-        // then
-        assertThat(updatedOrder.getOrderStatus()).isEqualTo(order.getOrderStatus());
-    }
-
-    @DisplayName("주문 상태가 완료인 경우 변경할 수 없다.")
-    @Test
-    void notChangeStatusIsComplete() {
-        // given
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
-
-        Order newOrder = new Order();
-        newOrder.setOrderStatus(OrderStatus.MEAL.name());
-
-        // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            orderService.changeOrderStatus(this.order.getId(), newOrder);
-        });
-    }
 }
