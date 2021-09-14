@@ -44,11 +44,11 @@ public class OrderLineItem {
         return id;
     }
 
-    public Long getOrder() {
+    public Long getOrderId() {
         return order.getId();
     }
 
-    public Long getMenu() {
+    public Long getMenuId() {
         return menu.getId();
     }
 

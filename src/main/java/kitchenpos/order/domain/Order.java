@@ -39,6 +39,7 @@ public class Order {
         this.orderStatus = builder.orderStatus;
         this.orderedTime = builder.orderedTime;
         this.orderLineItems = validateOrderLineItems(builder.orderLineItems);
+        updateOrderLineItems(orderLineItems);
     }
 
     private OrderTable validateOrderTable(OrderTable orderTable) {
@@ -99,10 +100,14 @@ public class Order {
         return orderedTime;
     }
 
+    public List<OrderLineItem> getOrderLineItems() {
+        return orderLineItems.findAll();
+    }
+
     public static class Builder {
         private Long id;
         private OrderTable orderTable;
-        private OrderStatus orderStatus;
+        private OrderStatus orderStatus = OrderStatus.COOKING;
         private LocalDateTime orderedTime;
         private List<OrderLineItem> orderLineItems;
 
