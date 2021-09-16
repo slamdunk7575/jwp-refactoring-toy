@@ -58,5 +58,17 @@ public class OrderService {
         return menu;
     }
 
+    @Transactional(readOnly = true)
+    public List<OrderResponse> findAll() {
+        return OrderResponse.ofList(orderRepository.findAll());
+    }
 
+    @Transactional
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
+        final Order savedOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 입니다."));
+
+        savedOrder.updateOrderStatus(orderRequest.getOrderStatus());
+        return OrderResponse.of(savedOrder);
+    }
 }
