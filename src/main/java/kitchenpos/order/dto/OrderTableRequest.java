@@ -28,7 +28,7 @@ public class OrderTableRequest {
     }
 
     public OrderTable toOrderTable() {
-        return new OrderTable(numberOfGuests, empty);
+        return new OrderTable(id, numberOfGuests, empty);
     }
 
     public Long getId() {

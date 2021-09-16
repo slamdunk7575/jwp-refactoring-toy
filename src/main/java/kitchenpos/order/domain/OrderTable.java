@@ -28,8 +28,8 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(int numberOfGuests, boolean empty) {
-        this(null, numberOfGuests, empty);
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+        this(id, null, numberOfGuests, empty);
     }
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {

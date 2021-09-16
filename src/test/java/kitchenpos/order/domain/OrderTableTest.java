@@ -17,9 +17,9 @@ public class OrderTableTest {
 
     @BeforeEach
     void setUp() {
-        그룹이_지정된_빈_테이블 = new OrderTable(등록된_그룹, 0, true);
-        그룹이_지정되지_않은_빈_테이블 = new OrderTable(null, 0, true);
-        그룹이_지정되지_않은_비어있지_않은_테이블 = new OrderTable(null, 0, false);
+        그룹이_지정된_빈_테이블 = new OrderTable(2L, 등록된_그룹, 0, true);
+        그룹이_지정되지_않은_빈_테이블 = new OrderTable(1L, null, 0, true);
+        그룹이_지정되지_않은_비어있지_않은_테이블 = new OrderTable(3L, null, 0, false);
     }
 
     @DisplayName("테이블 그룹 변경시, 주문 테이블 상태가 비어있지 않음으로 변경되어야 한다.")

@@ -26,8 +26,8 @@ public class OrderTest {
 
     @BeforeEach
     void setUp() {
-        MenuGroup 메뉴그룹_한마리_메뉴 = new MenuGroup("한마리 메뉴");
-        그룹이_지정되지_않은_비어있지_않은_테이블 = new OrderTable(null, 0, false);
+        MenuGroup 메뉴그룹_한마리_메뉴 = new MenuGroup(2L, "한마리 메뉴");
+        그룹이_지정되지_않은_비어있지_않은_테이블 = new OrderTable(3L, null, 0, false);
 
         메뉴_후라이드 = new Menu.Builder()
                 .id(1L)
