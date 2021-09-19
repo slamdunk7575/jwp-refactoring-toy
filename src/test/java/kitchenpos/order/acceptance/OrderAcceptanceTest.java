@@ -4,15 +4,16 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.*;
 import kitchenpos.menu.acceptance.MenuAcceptanceTest;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.acceptance.MenuGroupAcceptanceTest;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.product.acceptance.ProductAcceptanceTest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -31,14 +32,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable orderTable;
+    private OrderTableResponse orderTableResponse;
     private MenuResponse menuResponse;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        orderTable = OrderTableAcceptanceTest.주문_테이블_등록_되어있음(new OrderTableRequest(3, false)).as(OrderTable.class);
+        orderTableResponse = OrderTableAcceptanceTest.주문_테이블_등록_되어있음(new OrderTableRequest(3, false)).as(OrderTableResponse.class);
 
         MenuGroup 추천메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음(new MenuGroupRequest("추천메뉴")).as(MenuGroup.class);
 
@@ -56,10 +57,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void manageOrder() {
         // given
-        Order order = new Order(orderTable.getId(), Arrays.asList(new OrderLineItem(menuResponse.getId(), 1L)));
+        OrderRequest orderRequest = new OrderRequest(orderTableResponse.getId(), Arrays.asList(new OrderLineItemRequest(menuResponse.getId(), 1L)));
 
         // when
-        ExtractableResponse<Response> createResponse = 주문_생성_요청(order);
+        ExtractableResponse<Response> createResponse = 주문_생성_요청(orderRequest);
+
 
         // then
         주문_생성됨(createResponse);
@@ -72,25 +74,25 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_목록_포함됨(findResponse, Arrays.asList(createResponse));
 
         // when
-        order.setOrderStatus("COMPLETION");
-        ExtractableResponse<Response> updateResponse = 주문_상태_변경_요청(createResponse, order);
+        orderRequest.setOrderStatus("COMPLETION");
+        ExtractableResponse<Response> updateResponse = 주문_상태_변경_요청(createResponse, orderRequest);
 
         // then
         주문_응답됨(updateResponse);
 
         // when
-        order.setOrderStatus("MEAL");
-        ExtractableResponse<Response> wrongResponse = 주문_상태_변경_요청(createResponse, order);
+        orderRequest.setOrderStatus("MEAL");
+        ExtractableResponse<Response> wrongResponse = 주문_상태_변경_요청(createResponse, orderRequest);
 
         // then
         주문_응답_실패함(wrongResponse);
     }
 
-    public static ExtractableResponse<Response> 주문_생성_요청(Order order) {
+    public static ExtractableResponse<Response> 주문_생성_요청(OrderRequest orderRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(order)
+                .body(orderRequest)
                 .when().post("/api/orders")
                 .then().log().all()
                 .extract();
@@ -123,12 +125,12 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(findOrderIds).containsAll(createOrderIds);
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> createResponse, Order order) {
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> createResponse, OrderRequest orderRequest) {
         String location = createResponse.header("Location");
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(order)
+                .body(orderRequest)
                 .when().put(location+ "/order-status")
                 .then().log().all()
                 .extract();

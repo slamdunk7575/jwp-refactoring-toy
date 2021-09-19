@@ -34,4 +34,8 @@ public class OrderRequest {
     public List<OrderLineItemRequest> getOrderLineItemRequests() {
         return orderLineItemRequests;
     }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 }
