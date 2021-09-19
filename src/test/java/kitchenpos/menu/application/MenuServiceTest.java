@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.BaseServiceTest;
-import kitchenpos.application.MenuService;
 import kitchenpos.common.domain.price.InvalidPriceException;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
