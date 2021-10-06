@@ -15,10 +15,6 @@ public class MenuProduct {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
-
-    @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
 
@@ -33,20 +29,12 @@ public class MenuProduct {
         this.quantity = Quantity.of(quantity);
     }
 
-    public void updateMenu(Menu menu) {
-        this.menu = menu;
-    }
-
     public Price getPricePerQuantity() {
         return product.calculatePrice(quantity);
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getMenuId() {
-        return menu.getId();
     }
 
     public Long getProductId() {
