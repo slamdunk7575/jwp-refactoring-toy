@@ -22,16 +22,16 @@ public class MenuProductResponse {
         this.quantity = quantity;
     }
 
-    public static MenuProductResponse of(MenuProduct menuProduct) {
+    public static MenuProductResponse of(MenuProduct menuProduct, Long menuId) {
         return new MenuProductResponse(menuProduct.getId(),
-                menuProduct.getMenuId(),
+                menuId,
                 menuProduct.getProductId(),
                 menuProduct.getQuantity().value());
     }
 
-    public static List<MenuProductResponse> ofList(MenuProducts menuProducts) {
+    public static List<MenuProductResponse> ofList(MenuProducts menuProducts, Long menuId) {
         return menuProducts.findAll().stream()
-                .map(MenuProductResponse::of)
+                .map(menuProduct -> of(menuProduct, menuId))
                 .collect(Collectors.toList());
     }
 

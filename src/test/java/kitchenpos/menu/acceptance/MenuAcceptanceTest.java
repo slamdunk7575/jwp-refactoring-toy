@@ -9,8 +9,8 @@ import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.product.acceptance.ProductAcceptanceTest;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,8 +27,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MenuAcceptanceTest extends AcceptanceTest {
 
     private MenuGroup 추천메뉴;
-    private Product 양념치킨;
-    private Product 후라이드치킨;
+    private ProductResponse 양념치킨;
+    private ProductResponse 후라이드치킨;
 
     @Override
     @BeforeEach
@@ -40,8 +40,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         ProductRequest 후라이드치킨_product = new ProductRequest("후라이드치킨", BigDecimal.valueOf(15000));
 
         this.추천메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음(추천메뉴).as(MenuGroup.class);
-        this.양념치킨 = ProductAcceptanceTest.상품_등록되어_있음(양념치킨_product).as(Product.class);
-        this.후라이드치킨 = ProductAcceptanceTest.상품_등록되어_있음(후라이드치킨_product).as(Product.class);
+        this.양념치킨 = ProductAcceptanceTest.상품_등록되어_있음(양념치킨_product).as(ProductResponse.class);
+        this.후라이드치킨 = ProductAcceptanceTest.상품_등록되어_있음(후라이드치킨_product).as(ProductResponse.class);
     }
 
     @DisplayName("메뉴를 관리한다.")
