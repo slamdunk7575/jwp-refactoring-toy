@@ -103,7 +103,7 @@ public class OrderTest {
     @Test
     void notChangeStatus() {
         // given
-        OrderTable 그룹_지정된_테이블 = new OrderTable(new TableGroup(1L, LocalDateTime.now()), 5, false);
+        OrderTable 그룹_지정된_테이블 = new OrderTable(11L, 5, false);
         Order order = new Order.Builder()
                 .id(2L)
                 .orderTable(그룹_지정된_테이블)

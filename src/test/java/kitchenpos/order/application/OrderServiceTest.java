@@ -76,7 +76,7 @@ public class OrderServiceTest extends BaseServiceTest {
         orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
 
         TableGroup 그룹_테이블 = new TableGroup(1L, LocalDateTime.of(2021, 9, 4, 10, 30));
-        OrderTable 그룹_지정된_주문_테이블 = new OrderTable(10L, 그룹_테이블, 0, false);
+        OrderTable 그룹_지정된_주문_테이블 = new OrderTable(10L, 그룹_테이블.getId(), 0, false);
         OrderTable 그룹_지정되지_않은_주문_테이블 = new OrderTable(11L, 5, false);
 
         OrderLineItem 주문_아이템_후라이드_1개 = new OrderLineItem(1L, 메뉴_후라이드, 1);

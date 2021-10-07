@@ -33,8 +33,8 @@ public class OrderTableServiceTest extends BaseServiceTest {
         super.setUp();
         그룹_테이블 = new TableGroup(1L, LocalDateTime.of(2021, 9, 4, 10, 30));
         빈_테이블 = new OrderTable(1L, null, 0, true);
-        그룹_지정된_테이블 = new OrderTable(10L, 그룹_테이블, 0, false);
-        그룹_지정되지_않은_테이블 = new OrderTable(11L, null, 10, false);
+        그룹_지정된_테이블 = new OrderTable(10L, 그룹_테이블.getId(), 0, false);
+        그룹_지정되지_않은_테이블 = new OrderTable(13L, null, 3, false);
     }
 
     @DisplayName("주문 테이블을 등록할 수 있다.")
@@ -60,10 +60,10 @@ public class OrderTableServiceTest extends BaseServiceTest {
         List<OrderTableResponse> responses = orderTableService.findAll();
 
         // then
-        assertThat(responses.size()).isEqualTo(10);
+        assertThat(responses.size()).isEqualTo(13);
         assertThat(responses.stream()
                 .map(OrderTableResponse::getId)
-                .collect(Collectors.toList())).containsAll(Arrays.asList(1L, 2L, 3L, 4L, 10L));
+                .collect(Collectors.toList())).containsAll(Arrays.asList(1L, 2L, 3L, 4L, 13L));
     }
 
     @DisplayName("빈 테이블로 설정 또는 해지할 수 있다.")
@@ -99,11 +99,11 @@ public class OrderTableServiceTest extends BaseServiceTest {
     @Test
     void notChangeStatusWhenCookingOrMeal() {
         // given
-        Long emptyTableId = 그룹_지정되지_않은_테이블.getId();
+        Long orderTableId = 그룹_지정되지_않은_테이블.getId();
         OrderTableRequest changeEmptyRequest = new OrderTableRequest(true);
 
         // when & then
-        assertThatThrownBy(() -> orderTableService.changeEmpty(emptyTableId, changeEmptyRequest))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTableId, changeEmptyRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주문 상태가 조리중 또는 식사중인 주문 테이블의 상태는 변경할 수 없습니다.");
     }

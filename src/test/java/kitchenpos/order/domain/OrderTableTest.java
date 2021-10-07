@@ -17,7 +17,7 @@ public class OrderTableTest {
 
     @BeforeEach
     void setUp() {
-        그룹이_지정된_빈_테이블 = new OrderTable(2L, 등록된_그룹, 0, true);
+        그룹이_지정된_빈_테이블 = new OrderTable(2L, 등록된_그룹.getId(), 0, true);
         그룹이_지정되지_않은_빈_테이블 = new OrderTable(1L, null, 0, true);
         그룹이_지정되지_않은_비어있지_않은_테이블 = new OrderTable(3L, null, 0, false);
     }
@@ -26,7 +26,7 @@ public class OrderTableTest {
     @Test
     void updateTableGroup() {
         // when
-        그룹이_지정되지_않은_빈_테이블.updateTableGroup(등록된_그룹);
+        그룹이_지정되지_않은_빈_테이블.updateTableGroup(등록된_그룹.getId());
 
         // then
         assertThat(그룹이_지정되지_않은_빈_테이블.getTableGroupId()).isNotNull();

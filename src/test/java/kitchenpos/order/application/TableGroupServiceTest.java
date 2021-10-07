@@ -45,10 +45,10 @@ public class TableGroupServiceTest extends BaseServiceTest {
         빈테이블_2 = new OrderTable(2L, null, 0, true);
         비어있지_않은_테이블_1 = new OrderTable(9L, null, 5, false);
 
-        그룹_테이블_1 = new TableGroup(1L, LocalDateTime.of(2020, 9, 4, 10, 30));
-        그룹_테이블_2 = new TableGroup(2L, LocalDateTime.of(2020, 9, 4, 10, 30));
+        그룹_테이블_1 = new TableGroup(1L, LocalDateTime.of(2021, 9, 4, 10, 30));
+        그룹_테이블_2 = new TableGroup(2L, LocalDateTime.of(2021, 9, 4, 10, 30));
 
-        그룹_지정된_테이블_1 = new OrderTable(10L, 그룹_테이블_1, 0, false);
+        그룹_지정된_테이블_1 = new OrderTable(10L, 그룹_테이블_1.getId(), 0, false);
     }
 
 
@@ -109,7 +109,7 @@ public class TableGroupServiceTest extends BaseServiceTest {
     void ungroup() {
         // given
         Long tableGroupId = 그룹_테이블_2.getId();
-        List<OrderTable> orderTablesWithGroup = orderTableRepository.findAllByTableGroup(그룹_테이블_2);
+        List<OrderTable> orderTablesWithGroup = orderTableRepository.findAllByTableGroupId(그룹_테이블_2.getId());
         assertThat(orderTablesWithGroup.size()).isEqualTo(1);
 
         // when
@@ -117,7 +117,7 @@ public class TableGroupServiceTest extends BaseServiceTest {
 
 
         // then
-        List<OrderTable> orderTablesAfterUnGroup = orderTableRepository.findAllByTableGroup(그룹_테이블_2);
+        List<OrderTable> orderTablesAfterUnGroup = orderTableRepository.findAllByTableGroupId(그룹_테이블_2.getId());
         assertThat(orderTablesAfterUnGroup.size()).isEqualTo(0);
     }
 
