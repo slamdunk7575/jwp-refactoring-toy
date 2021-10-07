@@ -1,10 +1,10 @@
 package kitchenpos.order.domain;
 
-import com.sun.nio.sctp.IllegalReceiveException;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.List;
 
@@ -13,7 +13,8 @@ public class OrderTables {
 
     private static final int MIN_ORDER_TABLE_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables;
 
     protected OrderTables() {
@@ -38,7 +39,7 @@ public class OrderTables {
     }
 
     public void updateTableGroup(TableGroup tableGroup) {
-        orderTables.forEach(orderTable ->  orderTable.updateTableGroup(tableGroup));
+        orderTables.forEach(orderTable ->  orderTable.updateTableGroup(tableGroup.getId()));
     }
 
     public void checkOrderTableStatus() {
