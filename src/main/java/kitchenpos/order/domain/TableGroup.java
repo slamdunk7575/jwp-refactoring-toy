@@ -38,7 +38,6 @@ public class TableGroup {
     }
 
     public void unGroup() {
-        orderTables.checkOrderTableStatus();
         orderTables.unGroup();
     }
 
