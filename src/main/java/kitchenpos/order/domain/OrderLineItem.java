@@ -13,10 +13,6 @@ public class OrderLineItem {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
-
-    @ManyToOne
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
@@ -36,17 +32,17 @@ public class OrderLineItem {
         this.quantity = Quantity.of(quantity);
     }
 
-    public void updateOrder(Order order) {
+    /*public void updateOrder(Order order) {
         this.order = order;
-    }
+    }*/
 
     public Long getId() {
         return id;
     }
 
-    public Long getOrderId() {
+    /*public Long getOrderId() {
         return order.getId();
-    }
+    }*/
 
     public Long getMenuId() {
         return menu.getId();

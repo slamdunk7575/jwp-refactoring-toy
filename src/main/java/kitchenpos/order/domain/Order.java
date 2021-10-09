@@ -2,7 +2,6 @@ package kitchenpos.order.domain;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +12,7 @@ import java.util.Objects;
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,8 +38,7 @@ public class Order {
         this.orderTable = validateOrderTable(builder.orderTable);
         this.orderStatus = builder.orderStatus;
         this.orderedTime = builder.orderedTime;
-        this.orderLineItems = validateOrderLineItems(builder.orderLineItems);
-        updateOrderLineItems(orderLineItems);
+        this.orderLineItems = new OrderLineItems(builder.orderLineItems);
     }
 
     private OrderTable validateOrderTable(OrderTable orderTable) {
@@ -49,19 +48,18 @@ public class Order {
         return orderTable;
     }
 
-    private OrderLineItems validateOrderLineItems(List<OrderLineItem> orderLineItems) {
+    /*private OrderLineItems validateOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException("주문은 1개 이상의 메뉴가 포함되어 있어야 합니다.");
         }
         return new OrderLineItems(orderLineItems);
-    }
+    }*/
 
     public boolean isNotComplete() {
         return OrderStatus.COMPLETION != orderStatus;
     }
 
     public void updateOrderLineItems(OrderLineItems orderLineItems) {
-        orderLineItems.updateOrder(this);
         this.orderLineItems = orderLineItems;
     }
 
