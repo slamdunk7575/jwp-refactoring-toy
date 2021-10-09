@@ -27,7 +27,6 @@ public class OrderTableServiceTest extends BaseServiceTest {
     private OrderTable 그룹_지정되지_않은_테이블;
     private TableGroup 그룹_테이블;
 
-
     @BeforeEach
     public void setUp() {
         super.setUp();

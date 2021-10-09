@@ -51,7 +51,6 @@ public class TableGroupServiceTest extends BaseServiceTest {
         그룹_지정된_테이블_1 = new OrderTable(10L, 그룹_테이블_1.getId(), 0, false);
     }
 
-
     @DisplayName("단체 지정을 생성할 수 있다.")
     @Test
     void createTableGroup() {

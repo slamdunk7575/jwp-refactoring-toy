@@ -62,7 +62,6 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> createResponse = 주문_생성_요청(orderRequest);
 
-
         // then
         주문_생성됨(createResponse);
 
