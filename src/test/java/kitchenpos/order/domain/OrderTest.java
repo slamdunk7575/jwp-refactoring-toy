@@ -45,10 +45,9 @@ public class OrderTest {
                 .menuProducts(Arrays.asList(메뉴상품_양념))
                 .build();
 
-        orderLineItem_후라이드 = new OrderLineItem(메뉴_후라이드, 1);
-        orderLineItem_양념 = new OrderLineItem(메뉴_양념, 1);
+        orderLineItem_후라이드 = new OrderLineItem(메뉴_후라이드.getId(), 1);
+        orderLineItem_양념 = new OrderLineItem(메뉴_양념.getId(), 1);
     }
-
 
     @DisplayName("주문을 생성한다.")
     @Test
