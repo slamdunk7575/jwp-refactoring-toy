@@ -52,10 +52,10 @@ public class OrderService {
         return orderLineItems;
     }
 
-    private Menu findMenu(OrderLineItemRequest orderLineItemRequest) {
+    private Long findMenu(OrderLineItemRequest orderLineItemRequest) {
         Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴 입니다."));
-        return menu;
+        return menu.getId();
     }
 
     @Transactional(readOnly = true)
