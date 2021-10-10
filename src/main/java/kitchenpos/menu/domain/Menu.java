@@ -33,22 +33,8 @@ public class Menu {
         this.id = builder.id;
         this.name = builder.name;
         this.menuGroup = builder.menuGroup;
-        this.menuProducts = validateMenuProducts(builder.menuProducts);
-        this.price = validateMenuPrice(builder.price);
-    }
-
-    private Price validateMenuPrice(Price menuPrice) {
-        if (menuPrice.isExpensive(this.menuProducts.getPriceSum())) {
-            throw new IllegalArgumentException("메뉴 가격이 속한 상품들 가격 합보다 비쌉니다.");
-        }
-        return menuPrice;
-    }
-
-    private MenuProducts validateMenuProducts(List<MenuProduct> menuProducts) {
-        if (CollectionUtils.isEmpty(menuProducts)) {
-            throw new IllegalArgumentException("메뉴에 1개 이상의 상품이 포함되어야 합니다. ");
-        }
-        return new MenuProducts(menuProducts);
+        this.menuProducts = new MenuProducts(builder.menuProducts);
+        this.price = builder.price;
     }
 
     public Long getId() {
@@ -69,6 +55,10 @@ public class Menu {
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
+    }
+
+    public Price getMenuProductsPriceSum() {
+        return menuProducts.getPriceSum();
     }
 
     public static class Builder {
