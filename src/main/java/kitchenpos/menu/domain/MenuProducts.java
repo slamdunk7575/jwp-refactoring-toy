@@ -24,7 +24,7 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    protected Price getPriceSum() {
+    public Price getPriceSum() {
         Price sum = Price.zero();
         for (MenuProduct menuProduct : menuProducts) {
             sum.add(menuProduct.getPricePerQuantity());

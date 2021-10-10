@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.domain.price.Price;
 import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
@@ -22,22 +23,28 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
     public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository,
-                       ProductRepository productRepository) {
+                       ProductRepository productRepository, MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
+        List<MenuProduct> menuProducts = findMenuProducts(menuRequest.getMenuProducts());
         Menu menu = new Menu.Builder()
                 .name(menuRequest.getName())
                 .price(menuRequest.getPrice())
                 .menuGroup(findMenuGroup(menuRequest.getMenuGroupId()))
-                .menuProducts(findMenuProducts(menuRequest.getMenuProducts()))
+                .menuProducts(menuProducts)
                 .build();
+
+        menuValidator.validateMenuPrice(menu, new Price(menuRequest.getPrice()));
+        menuValidator.validateMenuProducts(menuProducts);
 
         return MenuResponse.of(menuRepository.save(menu));
     }
