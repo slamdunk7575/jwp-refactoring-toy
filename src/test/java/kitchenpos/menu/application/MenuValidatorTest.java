@@ -2,7 +2,7 @@ package kitchenpos.menu.application;
 
 import kitchenpos.common.domain.price.Price;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +24,7 @@ class MenuValidatorTest {
     private List<MenuProduct> menuProducts;
     private BigDecimal totalProductPrice;
     private MenuValidator menuValidator;
+    private MenuGroup menuGroup;
 
     @BeforeEach
     void setUp() {
@@ -33,6 +34,7 @@ class MenuValidatorTest {
         totalProductPrice = 메뉴상품_후라이드.getProductPrice().multiply(BigDecimal.valueOf(메뉴상품_후라이드.getQuantity().value()))
                 .add(메뉴상품_양념.getProductPrice().multiply(BigDecimal.valueOf(메뉴상품_양념.getQuantity().value())));
         menuValidator = new MenuValidator();
+        menuGroup = new MenuGroup(5L, "추천메뉴");
     }
 
     @DisplayName("메뉴 가격은 메뉴에 속한 상품들 가격의 합보다 크지 않아야 한다.")
@@ -43,7 +45,7 @@ class MenuValidatorTest {
         Menu menu = new Menu.Builder()
                 .name("가격이 잘못된 메뉴")
                 .price(wrongPrice)
-                .menuGroup(new MenuGroup("추천메뉴"))
+                .menuGroupId(menuGroup.getId())
                 .menuProducts(menuProducts)
                 .build();
 

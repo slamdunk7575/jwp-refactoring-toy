@@ -2,12 +2,11 @@ package kitchenpos.order.application;
 
 import kitchenpos.BaseServiceTest;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,7 +58,7 @@ public class OrderServiceTest extends BaseServiceTest {
                 .id(1L)
                 .name("후라이드")
                 .price(BigDecimal.valueOf(16000))
-                .menuGroup(메뉴그룹_한마리_메뉴)
+                .menuGroupId(메뉴그룹_한마리_메뉴.getId())
                 .menuProducts(Arrays.asList(메뉴상품_후라이드))
                 .build();
 
@@ -67,7 +66,7 @@ public class OrderServiceTest extends BaseServiceTest {
                 .id(2L)
                 .name("양념")
                 .price(BigDecimal.valueOf(16000))
-                .menuGroup(메뉴그룹_한마리_메뉴)
+                .menuGroupId(메뉴그룹_한마리_메뉴.getId())
                 .menuProducts(Arrays.asList(메뉴상품_양념))
                 .build();
 
