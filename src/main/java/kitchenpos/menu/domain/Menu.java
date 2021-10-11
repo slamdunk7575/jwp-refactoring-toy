@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.price.Price;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -19,9 +18,8 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_group_id")
-    private MenuGroup menuGroup;
+    @Column(name = "menu_group_id")
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts;
@@ -32,7 +30,7 @@ public class Menu {
     private Menu(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
-        this.menuGroup = builder.menuGroup;
+        this.menuGroupId = builder.menuGroupId;
         this.menuProducts = new MenuProducts(builder.menuProducts);
         this.price = builder.price;
     }
@@ -50,7 +48,7 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        return menuGroup.getId();
+        return menuGroupId;
     }
 
     public MenuProducts getMenuProducts() {
@@ -65,7 +63,7 @@ public class Menu {
         private Long id;
         private String name;
         private Price price;
-        private MenuGroup menuGroup;
+        private Long menuGroupId;
         private List<MenuProduct> menuProducts;
 
         public Builder id(Long id) {
@@ -83,8 +81,8 @@ public class Menu {
             return this;
         }
 
-        public Builder menuGroup(MenuGroup menuGroup) {
-            this.menuGroup = menuGroup;
+        public Builder menuGroupId(Long menuGroupId) {
+            this.menuGroupId = menuGroupId;
             return this;
         }
 
