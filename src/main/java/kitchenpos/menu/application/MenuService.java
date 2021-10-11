@@ -1,10 +1,9 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.common.domain.price.Price;
-import kitchenpos.menu.dao.MenuGroupRepository;
+import kitchenpos.menugroup.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -39,7 +38,7 @@ public class MenuService {
         Menu menu = new Menu.Builder()
                 .name(menuRequest.getName())
                 .price(menuRequest.getPrice())
-                .menuGroup(findMenuGroup(menuRequest.getMenuGroupId()))
+                .menuGroupId(menuRequest.getMenuGroupId())
                 .menuProducts(menuProducts)
                 .build();
 
@@ -49,10 +48,10 @@ public class MenuService {
         return MenuResponse.of(menuRepository.save(menu));
     }
 
-    private MenuGroup findMenuGroup(Long menuGroupId) {
+    /*private MenuGroup findMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴 그룹 입니다."));
-    }
+    }*/
 
     private List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProductRequests) {
         List<MenuProduct> menuProducts = new ArrayList<>();
