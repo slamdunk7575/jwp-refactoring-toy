@@ -29,10 +29,6 @@ public class OrderLineItems {
         }
     }
 
-    /*public void updateOrder(Order order) {
-        this.orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(order));
-    }*/
-
     public List<OrderLineItem> findAll() {
         return orderLineItems;
     }

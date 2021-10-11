@@ -48,19 +48,8 @@ public class Order {
         return orderTable;
     }
 
-    /*private OrderLineItems validateOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문은 1개 이상의 메뉴가 포함되어 있어야 합니다.");
-        }
-        return new OrderLineItems(orderLineItems);
-    }*/
-
     public boolean isNotComplete() {
         return OrderStatus.COMPLETION != orderStatus;
-    }
-
-    public void updateOrderLineItems(OrderLineItems orderLineItems) {
-        this.orderLineItems = orderLineItems;
     }
 
     public void updateOrderStatus(String orderStatus) {
