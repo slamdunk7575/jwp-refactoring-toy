@@ -28,11 +28,11 @@ class MenuValidatorTest {
 
     @BeforeEach
     void setUp() {
-        menuProduct_후라이드 = new MenuProduct(상품_후라이드, 1);
-        menuProduct_양념 = new MenuProduct(상품_양념, 1);
+        menuProduct_후라이드 = new MenuProduct(상품_후라이드.getId(), 1);
+        menuProduct_양념 = new MenuProduct(상품_양념.getId(), 1);
         menuProducts = Arrays.asList(menuProduct_후라이드, menuProduct_양념);
-        totalProductPrice = 메뉴상품_후라이드.getProductPrice().multiply(BigDecimal.valueOf(메뉴상품_후라이드.getQuantity().value()))
-                .add(메뉴상품_양념.getProductPrice().multiply(BigDecimal.valueOf(메뉴상품_양념.getQuantity().value())));
+        totalProductPrice = 상품_후라이드.getPrice().multiply(BigDecimal.valueOf(메뉴상품_후라이드.getQuantity().value()))
+                .add(상품_양념.getPrice().multiply(BigDecimal.valueOf(메뉴상품_양념.getQuantity().value())));
         menuValidator = new MenuValidator();
         menuGroup = new MenuGroup(5L, "추천메뉴");
     }

@@ -47,16 +47,16 @@ public class Menu {
         return price.value();
     }
 
+    public boolean isMenuPriceGreaterThan(Price productPrice) {
+        return this.price.isExpensive(productPrice);
+    }
+
     public Long getMenuGroupId() {
         return menuGroupId;
     }
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
-    }
-
-    public Price getMenuProductsPriceSum() {
-        return menuProducts.getPriceSum();
     }
 
     public static class Builder {
