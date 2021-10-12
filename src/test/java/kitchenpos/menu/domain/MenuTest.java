@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.price.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.util.TestFixture.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class MenuTest {
@@ -22,28 +24,31 @@ public class MenuTest {
 
     @BeforeEach
     void setUp() {
-        menuProduct_후라이드 = new MenuProduct(상품_후라이드, 1);
-        menuProduct_양념 = new MenuProduct(상품_양념, 1);
+        menuProduct_후라이드 = new MenuProduct(상품_후라이드.getId(), 1);
+        menuProduct_양념 = new MenuProduct(상품_양념.getId(), 1);
         menuProducts = Arrays.asList(menuProduct_후라이드, menuProduct_양념);
-        totalProductPrice = 메뉴상품_후라이드.getProductPrice().multiply(BigDecimal.valueOf(메뉴상품_후라이드.getQuantity().value()))
-                .add(메뉴상품_양념.getProductPrice().multiply(BigDecimal.valueOf(메뉴상품_양념.getQuantity().value())));
+        totalProductPrice = 상품_후라이드.getPrice().multiply(BigDecimal.valueOf(메뉴상품_후라이드.getQuantity().value()))
+                .add(상품_양념.getPrice().multiply(BigDecimal.valueOf(메뉴상품_양념.getQuantity().value())));
         menuGroup = new MenuGroup(5L, "추천메뉴");
     }
 
-    /*@DisplayName("메뉴 가격은 메뉴에 속한 상품들 가격의 합보다 크지 않아야 한다.")
+    @DisplayName("메뉴의 가격과 메뉴에 속한 상품들 가격을 비교할 수 있다.")
     @Test
-    void createMenuPriceGreaterThanSum() {
+    void isMenuPriceGreaterThan() {
         // given
-        BigDecimal wrongPrice = totalProductPrice.add(BigDecimal.valueOf(10000));
+        BigDecimal rightPrice = totalProductPrice.subtract(BigDecimal.valueOf(25000));
 
-        // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            new Menu.Builder()
-                    .name("가격이 잘못된 메뉴")
-                    .price(wrongPrice)
-                    .menuGroupId(menuGroup.getId())
-                    .menuProducts(menuProducts)
-                    .build();
-        }).withMessageMatching("메뉴 가격이 속한 상품들 가격 합보다 비쌉니다.");
-    }*/
+        Menu menu = new Menu.Builder()
+                .name("추천메뉴")
+                .price(rightPrice)
+                .menuGroupId(menuGroup.getId())
+                .menuProducts(menuProducts)
+                .build();
+
+        // when
+        boolean menuPriceCompareResult = menu.isMenuPriceGreaterThan(new Price(totalProductPrice));
+
+        // then
+        assertThat(menuPriceCompareResult).isFalse();
+    }
 }

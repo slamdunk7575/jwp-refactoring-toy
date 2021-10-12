@@ -2,6 +2,7 @@ package kitchenpos.menu.application;
 
 import kitchenpos.BaseServiceTest;
 import kitchenpos.common.domain.price.InvalidPriceException;
+import kitchenpos.common.domain.price.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -96,6 +97,19 @@ public class MenuServiceTest extends BaseServiceTest {
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             MenuResponse menuResponse = menuService.create(menuRequest);
         }).withMessageMatching("등록되지 않은 상품입니다.");
+    }
+
+    @DisplayName("메뉴에 속한 상품들의 가격 x 수량을 계산한다.")
+    @Test
+    void calculateMenuProductsPrice() {
+        // given
+        MenuRequest menuRequest = new MenuRequest(새로운_메뉴_name, 새로운_메뉴_price, 새로운_메뉴_menu_group_id, menuProductRequests);
+
+        // when
+        Price productPriceSum = menuService.getProductsPriceSum(menuRequest);
+
+        // then
+        assertThat(productPriceSum).isEqualTo(new Price(BigDecimal.valueOf(32000)));
     }
 
     @DisplayName("메뉴 가격이 속한 상품들 가격의 합보다 크지 않아야 한다.")
