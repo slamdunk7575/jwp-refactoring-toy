@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.domain.price.Price;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
@@ -22,14 +20,6 @@ public class MenuProducts {
 
     public MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
-    }
-
-    public Price getPriceSum() {
-        Price sum = Price.zero();
-        for (MenuProduct menuProduct : menuProducts) {
-            sum.add(menuProduct.getPricePerQuantity());
-        }
-        return sum;
     }
 
     public List<MenuProduct> findAll() {

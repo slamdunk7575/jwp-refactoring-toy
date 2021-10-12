@@ -29,8 +29,8 @@ public class Price {
         return new Price(BigDecimal.ZERO);
     }
 
-    public void add(Price otherPrice) {
-        this.price = this.price.add(otherPrice.value());
+    public Price add(Price otherPrice) {
+        return new Price(this.price.add(otherPrice.value()));
     }
 
     public Price multiply(BigDecimal quantity) {
@@ -43,5 +43,18 @@ public class Price {
 
     public BigDecimal value() {
         return this.price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Price price1 = (Price) o;
+        return Objects.equals(price.intValue(), price1.price.intValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(price);
     }
 }
