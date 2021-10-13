@@ -46,14 +46,6 @@ public class TableGroupService {
     public void unGroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 그룹입니다."));
-        checkOrderTableStatus(tableGroup.getOrderTables());
         tableGroup.unGroup();
-    }
-
-    private void checkOrderTableStatus(List<OrderTable> orderTables) {
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(orderTables,
-                OrderStatus.NOT_CHANGE_ORDER_STATUS)) {
-            throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 그룹 지정은 해제할 수 없습니다.");
-        }
     }
 }

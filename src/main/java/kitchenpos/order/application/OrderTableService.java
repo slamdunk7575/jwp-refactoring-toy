@@ -1,8 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.dao.OrderTableRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
@@ -10,16 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class OrderTableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
 
-    public OrderTableService(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
+    public OrderTableService(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
     }
 
     @Transactional
@@ -36,19 +31,8 @@ public class OrderTableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findById(orderTableId);
-        validateOrderStatus(savedOrderTable);
         savedOrderTable.updateEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(savedOrderTable);
-    }
-
-    private void validateOrderStatus(OrderTable orderTable) {
-        if (Objects.nonNull(orderTable.getTableGroupId())) {
-            throw new IllegalArgumentException("그룹 지정이 되어있어 상태를 변경할 수 없습니다.");
-        }
-
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, OrderStatus.NOT_CHANGE_ORDER_STATUS)) {
-            throw new IllegalArgumentException("주문 상태가 조리중 또는 식사중인 주문 테이블의 상태는 변경할 수 없습니다.");
-        }
     }
 
     @Transactional
