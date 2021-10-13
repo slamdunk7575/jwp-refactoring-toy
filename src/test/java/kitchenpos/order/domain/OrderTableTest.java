@@ -62,5 +62,4 @@ public class OrderTableTest {
             그룹이_지정되지_않은_빈_테이블.updateNumberOfGuests(10);
         }).withMessageMatching("빈 주문 테이블의 손님 수는 변경할 수 없습니다.");
     }
-
 }

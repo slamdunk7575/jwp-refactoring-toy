@@ -65,7 +65,6 @@ public class OrderTest {
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
-
     @DisplayName("하나 이상의 주문 항목을 가져야 한다.")
     @Test
     void requireOrderLineItem() {
