@@ -17,9 +17,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @Column(name = "order_table_id")
+    private Long orderTableId;
 
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
@@ -35,17 +34,17 @@ public class Order {
 
     private Order(Builder builder) {
         this.id = builder.id;
-        this.orderTable = validateOrderTable(builder.orderTable);
+        this.orderTableId = validateOrderTable(builder.orderTable);
         this.orderStatus = builder.orderStatus;
         this.orderedTime = builder.orderedTime;
         this.orderLineItems = new OrderLineItems(builder.orderLineItems);
     }
 
-    private OrderTable validateOrderTable(OrderTable orderTable) {
+    private Long validateOrderTable(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("빈 테이블은 주문할 수 없습니다.");
         }
-        return orderTable;
+        return orderTable.getId();
     }
 
     public boolean isNotComplete() {
@@ -68,11 +67,7 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return orderTable.getId();
-    }
-
-    public OrderTable getOrderTable() {
-        return orderTable;
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
