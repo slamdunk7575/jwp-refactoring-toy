@@ -1,5 +1,6 @@
-package kitchenpos.order.domain;
+package kitchenpos.ordertable.domain;
 
+import kitchenpos.order.domain.TableGroup;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
@@ -52,14 +53,5 @@ public class OrderTables {
 
     public boolean isSameSize(int otherSize) {
         return this.orderTables.size() == otherSize;
-    }
-
-    public void validateOrderTableStatus() {
-        boolean hasNotCompleteOrder = orderTables.stream()
-                .anyMatch(OrderTable::isNotComplete);
-
-        if (hasNotCompleteOrder) {
-            throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 그룹 지정은 해제할 수 없습니다.");
-        }
     }
 }

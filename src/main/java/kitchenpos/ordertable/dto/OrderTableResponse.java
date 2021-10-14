@@ -1,6 +1,6 @@
-package kitchenpos.order.dto;
+package kitchenpos.ordertable.dto;
 
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
 
 import java.util.List;
 import java.util.stream.Collectors;

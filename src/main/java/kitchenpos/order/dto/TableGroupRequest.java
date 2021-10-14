@@ -1,5 +1,7 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.ordertable.dto.OrderTableRequest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
