@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -38,7 +40,7 @@ public class TableGroup {
     }
 
     public void unGroup() {
-        orderTables.validateOrderTableStatus();
+        // orderTables.validateOrderTableStatus();
         orderTables.unGroup();
     }
 

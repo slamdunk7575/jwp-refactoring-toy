@@ -1,9 +1,10 @@
-package kitchenpos.order.application;
+package kitchenpos.ordertable.application;
 
-import kitchenpos.order.dao.OrderTableRepository;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.application.OrderOrderTableService;
+import kitchenpos.ordertable.dao.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +13,15 @@ import java.util.List;
 @Service
 public class OrderTableService {
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
+    private final OrderOrderTableService orderOrderTableService;
 
-    public OrderTableService(OrderTableRepository orderTableRepository) {
+    public OrderTableService(OrderTableRepository orderTableRepository,
+                             OrderTableValidator orderTableValidator,
+                             OrderOrderTableService orderOrderTableService) {
         this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
+        this.orderOrderTableService = orderOrderTableService;
     }
 
     @Transactional
@@ -31,6 +38,7 @@ public class OrderTableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findById(orderTableId);
+        orderTableValidator.validateOrderStatusIsCookingOrMeal(orderOrderTableService.findOrderByOrderTableId(orderTableId));
         savedOrderTable.updateEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(savedOrderTable);
     }
