@@ -1,11 +1,11 @@
 package kitchenpos.order.application;
 
 import kitchenpos.BaseServiceTest;
-import kitchenpos.order.dao.OrderTableRepository;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.ordertable.dao.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;

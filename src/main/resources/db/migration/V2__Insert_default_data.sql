@@ -42,7 +42,7 @@ INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (12
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (13, 3, false);
 
 INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (1, 10, 'COOKING', '2021-09-04 10:30:00');
-INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (2, 11, 'COMPLETION', '2021-09-11 01:30:00');
+INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (2, 12, 'COMPLETION', '2021-09-11 01:30:00');
 INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (3, 13, 'MEAL', '2021-10-07 11:30:00');
 
 INSERT INTO order_line_item (id, order_id, menu_id, quantity) VALUES (1, 1, 1, 1);

@@ -1,5 +1,6 @@
-package kitchenpos.order.domain;
+package kitchenpos.ordertable.domain;
 
+import kitchenpos.order.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

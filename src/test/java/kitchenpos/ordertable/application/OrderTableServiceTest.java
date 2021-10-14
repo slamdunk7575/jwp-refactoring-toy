@@ -1,10 +1,10 @@
-package kitchenpos.order.application;
+package kitchenpos.ordertable.application;
 
 import kitchenpos.BaseServiceTest;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,9 +30,9 @@ public class OrderTableServiceTest extends BaseServiceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        그룹_테이블 = new TableGroup(1L, LocalDateTime.of(2021, 9, 4, 10, 30));
+        그룹_테이블 = new TableGroup(2L, LocalDateTime.of(2021, 9, 4, 10, 30));
         빈_테이블 = new OrderTable(1L, null, 0, true);
-        그룹_지정된_테이블 = new OrderTable(10L, 그룹_테이블.getId(), 0, false);
+        그룹_지정된_테이블 = new OrderTable(12L, 그룹_테이블.getId(), 0, false);
         그룹_지정되지_않은_테이블 = new OrderTable(13L, null, 3, false);
     }
 
