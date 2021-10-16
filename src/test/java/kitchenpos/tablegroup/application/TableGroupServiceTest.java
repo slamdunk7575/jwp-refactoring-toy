@@ -1,13 +1,12 @@
-package kitchenpos.order.application;
+package kitchenpos.tablegroup.application;
 
 import kitchenpos.BaseServiceTest;
 import kitchenpos.ordertable.dao.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -63,17 +61,7 @@ public class TableGroupServiceTest extends BaseServiceTest {
         TableGroupResponse response = tableGroupService.create(tableGroupRequest);
 
         // then
-        List<Long> tableGroupIds = response.getOrderTables().stream()
-                .map(OrderTableResponse::getTableGroupId)
-                .collect(Collectors.toList());
-        assertThat(tableGroupIds.size()).isEqualTo(2);
-
-        assertThat(response.getOrderTables().stream()
-                .filter(OrderTableResponse::isEmpty)
-                .count()).isEqualTo(0);
-
-        assertThat(tableGroupIds.stream()
-                .distinct().count()).isEqualTo(1);
+        assertThat(response.getCreatedDate()).isNotNull();
     }
 
     @DisplayName("주문 테이블이 2개 이상 있어야 한다.")
@@ -126,6 +114,6 @@ public class TableGroupServiceTest extends BaseServiceTest {
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             tableGroupService.unGroup(그룹_지정된_테이블_1.getTableGroupId());
-        }).withMessageMatching("주문 상태가 조리중이거나 식사중인 테이블의 그룹 지정은 해제할 수 없습니다.");
+        }).withMessageMatching("주문 상태가 조리중 또는 식사중인 주문 테이블의 상태는 변경할 수 없습니다.");
     }
 }
