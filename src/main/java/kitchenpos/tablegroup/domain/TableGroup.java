@@ -1,15 +1,16 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.ordertable.domain.OrderTables;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+// TableGroup을 Aggregate 분리하면서 도메인에 있던 책임들이 자연스럽게 서비스로 이동하게 된다 (트레이드오프)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,29 +18,12 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate = LocalDateTime.now();
 
-    /*@Embedded
-    private OrderTables orderTables;*/
-
-    protected TableGroup() {
-    }
-
-    public TableGroup(final OrderTables orderTables) {
-        updateOrderTables(orderTables);
+    public TableGroup() {
     }
 
     public TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
-    }
-
-    public void updateOrderTables(OrderTables orderTables) {
-        orderTables.updateTableGroup(this);
-        // this.orderTables = orderTables;
-    }
-
-    public void unGroup() {
-        // orderTables.validateOrderTableStatus();
-        // orderTables.unGroup();
     }
 
     public Long getId() {
@@ -49,8 +33,4 @@ public class TableGroup {
     public LocalDateTime getCreateDate() {
         return createdDate;
     }
-
-    /*public List<OrderTable> getOrderTables() {
-        return orderTables.findAll();
-    }*/
 }

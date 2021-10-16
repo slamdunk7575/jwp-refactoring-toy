@@ -39,12 +39,6 @@ public class OrderTable {
         return empty;
     }
 
-    public void checkOrderTableEmptyOrAssigned() {
-        if (!empty || Objects.nonNull(tableGroupId)) {
-            throw new IllegalArgumentException("비어있지 않거나 이미 그룹이 지정된 테이블은 그룹 지정을 할 수 없습니다.");
-        }
-    }
-
     public void updateTableGroup(Long tableGroupId) {
         this.tableGroupId = tableGroupId;
         this.empty = false;
@@ -59,10 +53,14 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    private void validateOrderTableGroup() {
+    public void validateOrderTableGroup() {
         if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException("그룹 지정이 되어있어 상태를 변경할 수 없습니다.");
         }
+    }
+
+    public boolean hasTableGroup() {
+        return Objects.nonNull(tableGroupId);
     }
 
     public void updateNumberOfGuests(int numberOfGuests) {
