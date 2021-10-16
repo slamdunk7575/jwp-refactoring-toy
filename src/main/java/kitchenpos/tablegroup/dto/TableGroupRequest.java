@@ -1,4 +1,4 @@
-package kitchenpos.order.dto;
+package kitchenpos.tablegroup.dto;
 
 import kitchenpos.ordertable.dto.OrderTableRequest;
 
@@ -17,10 +17,6 @@ public class TableGroupRequest {
         if (Objects.nonNull(orderTables)) {
             this.orderTables = orderTables;
         }
-    }
-
-    public List<OrderTableRequest> getOrderTables() {
-        return orderTables;
     }
 
     public List<Long> getOrderTableIds() {
