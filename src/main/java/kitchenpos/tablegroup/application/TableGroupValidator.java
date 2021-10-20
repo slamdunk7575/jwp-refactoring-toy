@@ -25,7 +25,7 @@ public class TableGroupValidator {
         validateOrderTableEmptyOrAssigned(orderTables);
     }
 
-    private void validateOrderTableEmptyOrAssigned(List<OrderTable> orderTables) {
+    public void validateOrderTableEmptyOrAssigned(List<OrderTable> orderTables) {
         orderTables.forEach(this::checkOrderTableEmptyOrAssigned);
     }
 
